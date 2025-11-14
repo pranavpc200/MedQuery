@@ -1,0 +1,12 @@
+langchain
+langchain-community
+llama-index
+pypdf2
+pdfplumber
+faiss-cpu
+flask
+openai
+langchain_experimental
+sentence-transformers
+torch
+rank-bm25
