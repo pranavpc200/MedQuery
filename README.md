@@ -1,11 +1,11 @@
-MedQuery
+#### MedQuery
 PDF-Based Medical Q&A Assistant
 
 MedQuery is a Dockerized, privacy-first, session-isolated Retrieval Augmented Generation (RAG) application that allows users to upload medical PDF documents and ask detailed questions about their content.
 
 The system extracts text from PDFs, chunks them into embeddings, indexes them in FAISS, retrieves the most relevant sections, and produces an accurate medical answer using an LLM — all while keeping each user’s data completely isolated.
 
-Features
+### Features
 🔹 1. PDF Upload & Parsing
 
 Upload one or multiple PDFs
@@ -69,7 +69,7 @@ Tracks uploads, queries, chunks generated
 Cleans session on logout
 
 
-Architecture Overview (AC2–AC5 Compliance)
+#### Architecture Overview (AC2–AC5 Compliance)
 
 ###  AC2 — Correct RAG Behavior
 - Extract → Chunk → Embed → Index → Retrieve → Answer  
