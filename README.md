@@ -152,8 +152,7 @@ http://localhost:8000/health
 
 ### create a .env file
 ```bash
-FLASK_ENV=production
-SECRET_KEY=your-secret-key
+GROQ_API_KEY=your-secret-key
 ```
 
 # API Endpoints
