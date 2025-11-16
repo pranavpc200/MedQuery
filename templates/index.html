@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MedQuery – PDF Q&A Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #111827;
+      --header: #1e293b;
+      --border: rgba(255,255,255,0.08);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent2: #6366f1;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(99,102,241,0.15), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(34,197,94,0.15), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ---------- HEADER ---------- */
+    .header {
+      padding: 20px 26px;
+      background: var(--header);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.25);
+    }
+
+    .header-icon {
+      font-size: 40px;
+      opacity: 0.85;
+    }
+
+    .header-title {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    /* ---------- CARD ---------- */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.2);
+    }
+
+    label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* ---------- FILE UPLOAD ---------- */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .upload-zone:hover {
+      background: rgba(255,255,255,0.03);
+      border-color: var(--accent2);
+    }
+
+    .upload-zone-icon {
+      font-size: 55px;
+      opacity: 0.7;
+      margin-bottom: 8px;
+    }
+
+    /* ---------- TEXTAREA ---------- */
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #0b0f19;
+      padding: 14px 16px;
+      color: var(--text);
+      font-size: 15px;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: 2px solid var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ---------- BUTTONS ---------- */
+    .btn {
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      transform: none !important;
+    }
+
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+      margin-left: 12px;
+    }
+
+    /* ---------- ANSWER ---------- */
+    .answer-box {
+      margin-top: 12px;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #0b0f19;
+      font-size: 15px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .source-box {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      font-size: 14px;
+    }
+
+    .source-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    strong {
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-icon">📘</div>
+      <div class="header-title">MedQuery – Medical PDF Q&A</div>
+    </div>
+
+
+    <!-- Upload Section -->
+    <div class="card">
+      <label>Upload PDF files</label>
+
+      <div class="upload-zone" onclick="document.getElementById('files').click()">
+        <div class="upload-zone-icon">📄</div>
+        <div>Select one or more PDF documents</div>
+      </div>
+
+      <form id="upload-form" style="margin-top: 10px;">
+        <input id="files" name="files" type="file" accept="application/pdf" multiple style="display:none" />
+        <button type="submit" class="btn btn-primary" id="process-btn">
+          Build Index
+        </button>
+        <span id="status" class="status"></span>
+      </form>
+    </div>
+
+
+    <!-- Q&A Section -->
+    <div class="card">
+      <label>Ask a question based on your documents</label>
+      <textarea id="question" placeholder="Ex: What are the red flag symptoms for secondary headaches?"></textarea>
+
+      <div style="margin-top: 14px;">
+        <button class="btn btn-primary" id="ask-btn">Ask</button>
+        <span id="ask-status" class="status"></span>
+      </div>
+
+      <div id="answer" class="answer-box">
+        Upload PDFs and ask a question…
+      </div>
+
+      <div id="source"></div>
+    </div>
+
+  </div>
+
+
+  <!-- ---------- JAVASCRIPT ---------- -->
+  <script>
+    const uploadForm = document.getElementById("upload-form");
+    const processBtn = document.getElementById("process-btn");
+    const statusEl = document.getElementById("status");
+
+    const askBtn = document.getElementById("ask-btn");
+    const askStatusEl = document.getElementById("ask-status");
+    const questionEl = document.getElementById("question");
+    const answerEl = document.getElementById("answer");
+    const sourceEl = document.getElementById("source");
+
+    // UPLOAD
+    uploadForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const files = document.getElementById("files").files;
+      if (!files || files.length === 0) {
+        statusEl.textContent = "Please choose at least one PDF.";
+        return;
+      }
+
+      const formData = new FormData();
+      for (let f of files) formData.append("files", f);
+
+      processBtn.disabled = true;
+      statusEl.textContent = "Processing…";
+
+      try {
+        const res = await fetch("/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          statusEl.textContent = "Error: " + (data.error || "Upload failed.");
+        } else {
+          statusEl.textContent =
+            `Indexed ${data.files_uploaded} file(s), ` +
+            `${data.doc_pages_loaded} pages, ` +
+            `${data.chunks_created} chunks.`;
+        }
+      } catch (err) {
+        statusEl.textContent = "Network error.";
+      }
+
+      processBtn.disabled = false;
+    });
+
+
+    // ASK
+    askBtn.addEventListener("click", async () => {
+      const question = questionEl.value.trim();
+
+      if (!question) {
+        answerEl.textContent = "Please enter a question.";
+        return;
+      }
+
+      askBtn.disabled = true;
+      askStatusEl.textContent = "Thinking…";
+      answerEl.textContent = "Thinking…";
+      sourceEl.innerHTML = "";
+
+      try {
+        const res = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          answerEl.textContent = "Error: " + (data.error || "Failed.");
+          askStatusEl.textContent = "";
+          return;
+        }
+
+        answerEl.textContent = data.answer || "No answer.";
+
+        // AC2 — show clean source metadata
+        if (data.source) {
+          sourceEl.innerHTML = `
+            <div class="source-box">
+              <div class="source-title">Source Used</div>
+              <div><strong>File:</strong> ${data.source.file}</div>
+              <div><strong>Page:</strong> ${data.source.page}</div>
+              <div><strong>Snippet:</strong> ${data.source.snippet}</div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        answerEl.textContent = "Network error.";
+      }
+
+      askBtn.disabled = false;
+      askStatusEl.textContent = "";
+    });
+  </script>
+
+</body>
+</html>
